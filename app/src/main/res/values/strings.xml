@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">GestionParcLille1</string>
+    <string-array name="report_type_spinner_items">
+        <item>Arbre à tailler</item>
+        <item>Arbre à abattre</item>
+        <item>Détritus</item>
+        <item>Haie à tailler</item>
+        <item>Mauvaise herbe</item>
+        <item>Autre</item>
+    </string-array>
+</resources>
