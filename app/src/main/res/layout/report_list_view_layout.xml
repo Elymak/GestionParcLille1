@@ -9,10 +9,12 @@
     <!-- Type du probleme -->
     <TextView
         android:id="@+id/reportListViewReportType"
-        android:layout_width="247dp"
-        android:layout_height="35dp"
+        android:layout_width="246dp"
+        android:layout_height="40dp"
         android:layout_marginStart="8dp"
+        android:gravity="left|center"
         android:textSize="16sp"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         tools:layout_editor_absoluteY="0dp" />
 
@@ -20,7 +22,7 @@
     <TextView
         android:id="@+id/reportListViewLocation"
         android:layout_width="76dp"
-        android:layout_height="35dp"
+        android:layout_height="40dp"
         android:layout_marginEnd="8dp"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"

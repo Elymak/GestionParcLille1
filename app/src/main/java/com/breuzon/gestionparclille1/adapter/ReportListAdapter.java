@@ -28,8 +28,6 @@ public class ReportListAdapter extends ArrayAdapter<Report> {
         super(context, 0, reportList);
     }
 
-    private DatabaseHelper databaseHelper;
-
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
 
@@ -51,17 +49,5 @@ public class ReportListAdapter extends ArrayAdapter<Report> {
 
         return convertView;
     }
-
-    /**
-     * permet d'accéder à la base
-     * @return DatabaseHelper
-     */
-    private DatabaseHelper getHelper() {
-        if (databaseHelper == null) {
-            databaseHelper = OpenHelperManager.getHelper(getContext(), DatabaseHelper.class);
-        }
-        return databaseHelper;
-    }
-
 
 }

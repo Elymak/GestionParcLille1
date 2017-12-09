@@ -23,6 +23,7 @@
         </activity>
         <activity android:name=".AddReportActivity" />
         <activity android:name=".ViewReportsActivity" />
+        <activity android:name=".ReportDetailActivity"></activity>
     </application>
 
 </manifest>

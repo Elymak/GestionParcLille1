@@ -82,6 +82,14 @@ public class Report implements Serializable {
         this.description = description;
     }
 
+    public int getReportId() {
+        return reportId;
+    }
+
+    public void setReportId(int reportId) {
+        this.reportId = reportId;
+    }
+
     public String getReportType() {
         return reportType;
     }
