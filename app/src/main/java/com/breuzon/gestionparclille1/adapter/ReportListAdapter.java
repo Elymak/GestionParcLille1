@@ -13,11 +13,8 @@ import android.widget.TextView;
 import com.breuzon.gestionparclille1.R;
 import com.breuzon.gestionparclille1.dao.DatabaseHelper;
 import com.breuzon.gestionparclille1.model.Report;
-import com.breuzon.gestionparclille1.model.ReportType;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
-import com.j256.ormlite.dao.Dao;
 
-import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.List;
 
@@ -43,18 +40,9 @@ public class ReportListAdapter extends ArrayAdapter<Report> {
         }
 
         TextView reportListViewReportType = convertView.findViewById(R.id.reportListViewReportType);
-        reportListViewReportType.setText(report.getReportType().getName());
+        reportListViewReportType.setText(report.getReportType());
 
-        Log.d(ReportListAdapter.class.getName(), "#######\n# Report Type Name : " + report.getReportType().getName() + "\n#######");
-
-        try{
-            Dao<ReportType, Integer> reportTypedao = getHelper().getReportTypesDao();
-
-            //TODO
-
-        } catch (SQLException e){
-
-        }
+        Log.d(ReportListAdapter.class.getName(), "#######\n# Report Type Name : " + report.getReportType() + "\n#######");
 
 
         TextView reportListViewLocation = convertView.findViewById(R.id.reportListViewLocation);

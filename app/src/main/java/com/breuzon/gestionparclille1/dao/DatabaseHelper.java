@@ -38,22 +38,6 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
      */
     private static final int DATABASE_VERSION = 1;
 
-    /**
-     * liste de tous les types de reports possible
-     */
-    private static List<ReportType> reportTypesList = new ArrayList<ReportType>() {{
-        add(new ReportType("Arbre à tailler"));
-        add(new ReportType("Arbre à abattre"));
-        add(new ReportType("Détritus"));
-        add(new ReportType("Haie à tailler"));
-        add(new ReportType("Mauvaise herbe"));
-        add(new ReportType("Autre"));
-    }};
-
-    /**
-     * Dao pour les ReportType
-     */
-    private Dao<ReportType, Integer> reportTypesDao;
 
     /**
      * Dao pour les Report
@@ -73,9 +57,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
         try {
 
             // création des tables
-            TableUtils.createTable(connectionSource, ReportType.class);
             TableUtils.createTable(connectionSource, Report.class);
-            getReportTypesDao().create(reportTypesList);
 
         } catch (SQLException e) {
             Log.e(DatabaseHelper.class.getName(), "Unable to create tables", e);
@@ -94,7 +76,6 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             // une nouvelle table ou une nouvelle colonne dans une table existante,
             // prendre les sauvegardes de la base de données existante, etc.
 
-            TableUtils.dropTable(connectionSource, ReportType.class, true);
             TableUtils.dropTable(connectionSource, Report.class, true);
             onCreate(database, connectionSource);
 
@@ -105,17 +86,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     }
 
 
-    /**
-     * permet de récupérer le Dao des ReportTypes
-     * @return Dao
-     * @throws SQLException Exception SQL
-     */
-    public Dao<ReportType, Integer> getReportTypesDao() throws SQLException {
-        if (reportTypesDao == null) {
-            reportTypesDao = getDao(ReportType.class);
-        }
-        return reportTypesDao;
-    }
+
 
     /**
      * permet de récupérer le Dao des Reports

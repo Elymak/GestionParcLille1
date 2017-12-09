@@ -22,14 +22,12 @@ import android.widget.Toast;
 
 import com.breuzon.gestionparclille1.dao.DatabaseHelper;
 import com.breuzon.gestionparclille1.model.Report;
-import com.breuzon.gestionparclille1.model.ReportType;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -73,6 +71,9 @@ public class AddReportActivity extends AppCompatActivity implements LocationList
     @BindView(R.id.cancelButton)
     Button cancelButton;
 
+    @BindView(R.id.refreshButton)
+    Button refreshButton;
+
     @BindView(R.id.reportTypeSpinner)
     Spinner reportTypeSpinner;
 
@@ -91,14 +92,8 @@ public class AddReportActivity extends AppCompatActivity implements LocationList
 
         //récupération des objets servant à la géolocalisation
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        Criteria criteria = new Criteria();
-        provider = locationManager.getBestProvider(criteria,true);
 
         //construction du spinner
-
-        //List<ReportType> spinnerItems = getReportTypeList();
-        //ReportTypeSpinnerAdapter adapter = new ReportTypeSpinnerAdapter(this, spinnerItems);
-
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.report_type_spinner_items, android.R.layout.simple_spinner_item);
         reportTypeSpinner.setAdapter(adapter);
@@ -117,23 +112,45 @@ public class AddReportActivity extends AppCompatActivity implements LocationList
      * méthode appelée lorsqu'on clique sur le boutton "refresh"
      * permet de géolocaliser le device et de mettre à jour la vue
      */
+    @OnClick(R.id.refreshButton)
     public void refreshLocationAndLayout() {
+        Criteria criteria = new Criteria();
+        provider = locationManager.getBestProvider(criteria, true);
 
+        //Location location = locationManager.getLastKnownLocation(provider);
+        Location location = getLastKnownLocation();
+
+        if (location != null) {
+            onLocationChanged(location);
+        } else {
+            Toast.makeText(this, "Impossible de récupérer la localisation actuelle", Toast.LENGTH_LONG).show();
+        }
+
+
+    }
+
+    private Location getLastKnownLocation() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             //Toast.makeText(this, "Impossible de récupérer les coordonnées GPS, permissions non accordées", Toast.LENGTH_LONG).show();
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 200);
         } else {
-            Location location = locationManager.getLastKnownLocation(provider);
-            locationManager.requestLocationUpdates(provider, 2000, 5, this);
-
-            if(location != null) {
-                onLocationChanged(location);
-            } else {
-                Toast.makeText(this, "Impossible de récupérer la localisation actuelle", Toast.LENGTH_LONG).show();
+            List<String> providers = locationManager.getProviders(true);
+            Location bestLocation = null;
+            for (String provider : providers) {
+                Location l = locationManager.getLastKnownLocation(provider);
+                if (l == null) {
+                    continue;
+                }
+                if (bestLocation == null || l.getAccuracy() < bestLocation.getAccuracy()) {
+                    // Found best last known location: %s", l);
+                    bestLocation = l;
+                }
             }
+            locationManager.requestLocationUpdates(provider, 2000, 5, this);
+            return bestLocation;
         }
-
+        return null;
     }
 
     /**
@@ -204,15 +221,10 @@ public class AddReportActivity extends AppCompatActivity implements LocationList
         //recupère les données de la vue et les sauvegarde
         try {
             CharSequence reportTypeName = (CharSequence) reportTypeSpinner.getSelectedItem();
-            ReportType reportType = new ReportType();
-            for(ReportType r : getReportTypeList()){
-                if(r.getName().equals(reportTypeName)){
-                    reportType = r;
-                }
-            }
+
 
             Report report = new Report(
-                    reportType,
+                    reportTypeName.toString(),
                     latitude,
                     longitude,
                     adresseEditText.getText().toString(),
@@ -241,20 +253,6 @@ public class AddReportActivity extends AppCompatActivity implements LocationList
             databaseHelper = OpenHelperManager.getHelper(this, DatabaseHelper.class);
         }
         return databaseHelper;
-    }
-
-    /**
-     * permet de retourner la liste des ReportType
-     * @return List
-     */
-    private List<ReportType> getReportTypeList(){
-        try {
-            Dao<ReportType, Integer> dao = getHelper().getReportTypesDao(); //this can throws a SQLException
-            return dao.queryForAll();
-        } catch (SQLException e) {
-            Log.e(AddReportActivity.class.getName(), "Cannot get all ReportTypes", e);
-            return new ArrayList<>();
-        }
     }
 
     @OnClick(R.id.cancelButton)

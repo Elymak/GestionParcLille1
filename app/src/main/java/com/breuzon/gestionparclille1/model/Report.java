@@ -44,8 +44,8 @@ public class Report implements Serializable {
     @DatabaseField(generatedId = true, columnName = ID_FIELD)
     public int reportId;
 
-    @DatabaseField(canBeNull = false, foreign = true, foreignAutoRefresh = true, columnName = REP_FIELD)
-    public ReportType reportType;
+    @DatabaseField(canBeNull = false, columnName = REP_FIELD)
+    public String reportType;
 
     @DatabaseField(columnName = LAT_FIELD)
     public double latitude;
@@ -74,7 +74,7 @@ public class Report implements Serializable {
      * @param adresse l'adresse du report (si elle existe)
      * @param description la description du report
      */
-    public Report(ReportType reportType, double latitude, double longitude, String adresse, String description) {
+    public Report(String reportType, double latitude, double longitude, String adresse, String description) {
         this.reportType = reportType;
         this.latitude = latitude;
         this.longitude = longitude;
@@ -82,11 +82,11 @@ public class Report implements Serializable {
         this.description = description;
     }
 
-    public ReportType getReportType() {
+    public String getReportType() {
         return reportType;
     }
 
-    public void setReportType(ReportType reportType) {
+    public void setReportType(String reportType) {
         this.reportType = reportType;
     }
 

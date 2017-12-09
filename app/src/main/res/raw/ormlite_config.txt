@@ -1,23 +1,5 @@
 #################################
 # --table start--
-dataClass=com.breuzon.gestionparclille1.model.ReportType
-tableName=report_type
-# --table-fields-start--
-# --field-start--
-fieldName=reportTypeId
-columnName=report_type_id
-generatedId=true
-# --field-end--
-# --field-start--
-fieldName=name
-columnName=report_type_name
-# --field-end--
-# --table-fields-end--
-# --table-end--
-#################################
-
-#################################
-# --table start--
 dataClass=com.breuzon.gestionparclille1.model.Report
 tableName=report
 # --table-fields-start--
@@ -29,7 +11,6 @@ generatedId=true
 # --field-start--
 fieldName=reportType
 columnName=report_type
-foreign=true
 # --field-end--
 # --field-start--
 fieldName=latitude
