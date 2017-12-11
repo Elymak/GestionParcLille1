@@ -39,9 +39,7 @@ public class ViewReportsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_view_reports);
         ButterKnife.bind(this);
 
-        List<Report> reports = getReportList();
-        ReportListAdapter adapter = new ReportListAdapter(this, reports);
-        reportListView.setAdapter(adapter);
+        refreshLayout();
 
         reportListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
@@ -56,9 +54,26 @@ public class ViewReportsActivity extends AppCompatActivity {
                 Bundle b = new Bundle();
                 b.putInt("reportId", id);
                 intent.putExtras(b); //Put your id to your next Intent
-                startActivity(intent);
+                startActivityForResult(intent, 1);
             }
         });
+    }
+
+    private void refreshLayout() {
+        List<Report> reports = getReportList();
+        ReportListAdapter adapter = new ReportListAdapter(this, reports);
+        reportListView.setAdapter(adapter);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if(resultCode == RESULT_OK){
+            refreshLayout();
+        } else {
+            Toast.makeText(this, "result no ok", Toast.LENGTH_LONG).show();
+        }
+
     }
 
     /**
