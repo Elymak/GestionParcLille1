@@ -6,7 +6,6 @@ import android.util.Log;
 
 import com.breuzon.gestionparclille1.R;
 import com.breuzon.gestionparclille1.model.Report;
-import com.breuzon.gestionparclille1.model.ReportType;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.support.ConnectionSource;

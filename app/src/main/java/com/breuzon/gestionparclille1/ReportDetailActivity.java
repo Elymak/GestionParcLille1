@@ -2,8 +2,10 @@ package com.breuzon.gestionparclille1;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -177,7 +179,24 @@ public class ReportDetailActivity extends AppCompatActivity {
 
     @OnClick(R.id.googleMapButton)
     public void googleMapOnClick(){
-        Toast.makeText(this, "google", Toast.LENGTH_LONG).show();
+        startGoogleMapsActivity();
+        //Toast.makeText(this, "google", Toast.LENGTH_LONG).show();
+    }
+
+    private void startGoogleMapsActivity(){
+        if(report != null) {
+            String s = "geo:" + report.getLatitude() + "," + report.getLongitude()
+                    + "?q=" + report.getLatitude() + "," + report.getLongitude()
+                    + "(" + report.getAdresse().replace(' ', '+') + ")";
+            Uri gmmIntentUri = Uri.parse(s);
+            Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+            mapIntent.setPackage("com.google.android.apps.maps");
+            if (mapIntent.resolveActivity(getPackageManager()) != null) {
+                startActivity(mapIntent);
+            }
+        } else {
+            Toast.makeText(this, "Impossible de lancer l'application Google Maps", Toast.LENGTH_LONG).show();
+        }
     }
 
     /**
