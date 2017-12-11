@@ -95,7 +95,7 @@ public class AddReportActivity extends AppCompatActivity implements LocationList
 
         //construction du spinner
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.report_type_spinner_items, android.R.layout.simple_spinner_item);
+                R.array.report_type_spinner_items, R.layout.report_type_list_view);
         reportTypeSpinner.setAdapter(adapter);
 
         submitButton.setEnabled(false);

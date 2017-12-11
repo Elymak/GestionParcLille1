@@ -84,11 +84,7 @@ public class ReportDetailActivity extends AppCompatActivity {
 
     @OnClick(R.id.supprimerReportButton)
     public void onDeleteButtonClick(){
-        if(p != null) {
-            showDialog();
-        } else {
-            Toast.makeText(this, "Un problème est survenu lors de l'affichage du layout", Toast.LENGTH_LONG).show();
-        }
+        showDialog();
     }
 
     private void showDialog(){
