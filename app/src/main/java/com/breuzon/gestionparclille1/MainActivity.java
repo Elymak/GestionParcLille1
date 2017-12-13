@@ -10,6 +10,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+/**
+ * Cette classe permet de naviguer entre les différentes fonctionnalités
+ */
 public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.viewReportsButton)

@@ -20,6 +20,9 @@ import java.util.List;
 
 /**
  * Created by serial on 06/12/2017.
+ *
+ * Cette classe permet la gestion des items dans la list view des reports
+ * lorsqu'on affiche la liste des reports
  */
 
 public class ReportListAdapter extends ArrayAdapter<Report> {
@@ -31,18 +34,19 @@ public class ReportListAdapter extends ArrayAdapter<Report> {
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
 
+        //on récupère le report à la position
         Report report = getItem(position);
 
+        //on récupère la vue
         if(convertView == null){
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.report_list_view_layout, parent, false);
         }
 
+        //on récupère la text view et on set le type du report
         TextView reportListViewReportType = convertView.findViewById(R.id.reportListViewReportType);
         reportListViewReportType.setText(report.getReportType());
 
-        Log.d(ReportListAdapter.class.getName(), "#######\n# Report Type Name : " + report.getReportType() + "\n#######");
-
-
+        //on récupère la seconde text view pour afficher les coordonnées GPS du report
         TextView reportListViewLocation = convertView.findViewById(R.id.reportListViewLocation);
         DecimalFormat df = new DecimalFormat("#.00");
         reportListViewLocation.setText(String.format("%s°N %s° O", df.format(report.getLatitude()), df.format(report.getLongitude())));

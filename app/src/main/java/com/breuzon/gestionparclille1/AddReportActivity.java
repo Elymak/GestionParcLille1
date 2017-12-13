@@ -88,7 +88,7 @@ public class AddReportActivity extends AppCompatActivity implements LocationList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_report);
-        ButterKnife.bind(this);
+        ButterKnife.bind(this); //NE PAS OUBLIER !!!
 
         //récupération des objets servant à la géolocalisation
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -98,8 +98,10 @@ public class AddReportActivity extends AppCompatActivity implements LocationList
                 R.array.report_type_spinner_items, R.layout.report_type_list_view);
         reportTypeSpinner.setAdapter(adapter);
 
+        //tant que les coordonnées GPS ne sont pas récupérées, on ne permet pas la sauvegarde
         submitButton.setEnabled(false);
 
+        //on met à jour les views
         refreshLocationAndLayout();
 
     }
@@ -117,33 +119,41 @@ public class AddReportActivity extends AppCompatActivity implements LocationList
         Criteria criteria = new Criteria();
         provider = locationManager.getBestProvider(criteria, true);
 
-        //Location location = locationManager.getLastKnownLocation(provider);
         Location location = getLastKnownLocation();
 
         if (location != null) {
             onLocationChanged(location);
         } else {
-            Toast.makeText(this, "Impossible de récupérer la localisation actuelle", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Impossible de récupérer la localisation actuelle\n" +
+                    "Veuillez vérifier que la géolocalisation est activée", Toast.LENGTH_LONG).show();
         }
 
 
     }
 
+    /**
+     * Cette méthode récupère la dernière position connue du device
+     *
+     * @return Location
+     */
     private Location getLastKnownLocation() {
+        //on vérifie qu'on a les permissions nécessaires, sinon on les demande
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            //Toast.makeText(this, "Impossible de récupérer les coordonnées GPS, permissions non accordées", Toast.LENGTH_LONG).show();
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 200);
         } else {
+            //récupère les providers
             List<String> providers = locationManager.getProviders(true);
             Location bestLocation = null;
+
+            //parcourt des providers pour récupérer la meilleure localisation
             for (String provider : providers) {
                 Location l = locationManager.getLastKnownLocation(provider);
                 if (l == null) {
                     continue;
                 }
                 if (bestLocation == null || l.getAccuracy() < bestLocation.getAccuracy()) {
-                    // Found best last known location: %s", l);
+                    // Found best last known location
                     bestLocation = l;
                 }
             }
@@ -171,6 +181,7 @@ public class AddReportActivity extends AppCompatActivity implements LocationList
         try {
             List<Address> list = geo.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
 
+            //on récupère la première adresse
             if(list != null && list.size() > 0){
                 Address address = list.get(0);
                 adresseEditText.setText(String.format("%s, %s %s",
@@ -220,8 +231,8 @@ public class AddReportActivity extends AppCompatActivity implements LocationList
     public void saveReport(){
         //recupère les données de la vue et les sauvegarde
         try {
+            //récupère le type depuis le spinner
             CharSequence reportTypeName = (CharSequence) reportTypeSpinner.getSelectedItem();
-
 
             Report report = new Report(
                     reportTypeName.toString(),
@@ -231,6 +242,7 @@ public class AddReportActivity extends AppCompatActivity implements LocationList
                     descriptionEditText.getText().toString()
             );
 
+            //save
             Dao<Report, Integer> reportDao = getHelper().getReportDao();
             reportDao.create(report);
 
@@ -257,6 +269,7 @@ public class AddReportActivity extends AppCompatActivity implements LocationList
 
     @OnClick(R.id.cancelButton)
     public void endActivity(){
+        //on termine l'activité quand on clique sur Cancel
         locationManager.removeUpdates(this);
         finish();
     }

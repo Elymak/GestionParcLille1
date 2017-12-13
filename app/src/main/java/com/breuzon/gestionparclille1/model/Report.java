@@ -82,6 +82,10 @@ public class Report implements Serializable {
         this.description = description;
     }
 
+    /*
+            GETTERS AND SETTERS
+     */
+
     public int getReportId() {
         return reportId;
     }

@@ -1,13 +1,11 @@
 package com.breuzon.gestionparclille1;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.breuzon.gestionparclille1.adapter.ReportListAdapter;
 import com.breuzon.gestionparclille1.dao.DatabaseHelper;
@@ -21,7 +19,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 public class ViewReportsActivity extends AppCompatActivity {
 
@@ -37,10 +34,12 @@ public class ViewReportsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_reports);
-        ButterKnife.bind(this);
+        ButterKnife.bind(this); // NE PAS OUBLIER
 
+        //on met à jour les views
         refreshLayout();
 
+        //on construit le listner pour lancer l'activité des détails
         reportListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
             @Override
@@ -50,30 +49,38 @@ public class ViewReportsActivity extends AppCompatActivity {
                 Report report = (Report) adapter.getItemAtPosition(position);
                 int id = report.getReportId();
 
+                //on met en paramètre l'id du report
                 Intent intent = new Intent(ViewReportsActivity.this, ReportDetailActivity.class);
                 Bundle b = new Bundle();
                 b.putInt("reportId", id);
-                intent.putExtras(b); //Put your id to your next Intent
+                intent.putExtras(b);
+                //on attends un résultat pour mettre à jour ou non les views
                 startActivityForResult(intent, 1);
             }
         });
     }
 
+    /**
+     * Cette methode met à jour la list view avec un ReportAdapter
+     */
     private void refreshLayout() {
         List<Report> reports = getReportList();
         ReportListAdapter adapter = new ReportListAdapter(this, reports);
         reportListView.setAdapter(adapter);
     }
 
+    /**
+     * Dès qu'on reçoit un résultat de l'activité ReportDetailActivity, on gère le rafraichissement de la listview
+     *
+     * @param requestCode code de requete
+     * @param resultCode code de retour
+     * @param data données de l'activité
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
         if(resultCode == RESULT_OK){
             refreshLayout();
-        } else {
-            Toast.makeText(this, "result no ok", Toast.LENGTH_LONG).show();
         }
-
     }
 
     /**
@@ -85,7 +92,6 @@ public class ViewReportsActivity extends AppCompatActivity {
             Dao<Report, Integer> dao = getHelper().getReportDao(); //this can throws a SQLException
             return dao.queryForAll();
         } catch (SQLException e) {
-            Log.e(AddReportActivity.class.getName(), "Cannot get all Reports", e);
             return new ArrayList<>();
         }
     }

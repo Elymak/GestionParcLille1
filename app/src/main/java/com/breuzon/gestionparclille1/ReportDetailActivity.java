@@ -45,24 +45,25 @@ public class ReportDetailActivity extends AppCompatActivity {
     @BindView(R.id.supprimerReportButton)
     public Button deleteButton;
 
-    private Point p;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_report_detail);
-        ButterKnife.bind(this);
+        ButterKnife.bind(this); //NE PAS OUBLIER !!!
 
+        // on récupère l'id du problème à afficher depuis le bundle
+        // l'activité a été lancé avec ce paramètre dans ViewReportsActivity
         Bundle b = getIntent().getExtras();
         int value = -1; // or other values
         if(b != null) {
             value = b.getInt("reportId");
         }
 
+        //on récupère le report depuis la base, si le problème n'existe pas on termine l'activité
         report = null;
         try {
             report = getHelper().getReportDao().queryForId(value);
-            showDetailsForReport(report);
+            showDetailsForReport(report); //on met à jour les views
         } catch (SQLException e) {
             Toast.makeText(this, "Ce problème n'existe pas", Toast.LENGTH_LONG).show();
             finish();
@@ -87,12 +88,15 @@ public class ReportDetailActivity extends AppCompatActivity {
         showDialog();
     }
 
+    /**
+     * affiche une pop up pour confirmer la suppression du report
+     */
     private void showDialog(){
         final Dialog dialog = new Dialog(ReportDetailActivity.this);
         dialog.setContentView(R.layout.confirm_delete_popup);
         dialog.show();
 
-        // Getting a reference to No button, and close the popup when clicked.
+        // récupère le boutton non pour fermer la pop up
         Button noButton = dialog.findViewById(R.id.popup_no);
         noButton.setOnClickListener(new View.OnClickListener() {
 
@@ -102,13 +106,12 @@ public class ReportDetailActivity extends AppCompatActivity {
             }
         });
 
-        // Getting a reference to Yes button, and delete the report when clicked.
+        // récupère le boutton oui pour supprimer le report puis fermer l'activité
         Button yesButton = dialog.findViewById(R.id.popup_yes);
         yesButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                //Toast.makeText(context, "YEEEEES", Toast.LENGTH_LONG).show();
                 deleteAndFinishActivity();
             }
         });
@@ -118,7 +121,10 @@ public class ReportDetailActivity extends AppCompatActivity {
     private void deleteAndFinishActivity(){
         if(report != null){
             try {
+                //on supprime
                 getHelper().getReportDao().delete(report);
+
+                // on indique à l'activité précédente que le report a été supprimé pour quelle puisse se mettre à jour (ViewReportsActivity)
                 setResult(RESULT_OK,null);
                 finish();
             } catch (SQLException e) {
@@ -129,14 +135,17 @@ public class ReportDetailActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Quand on clique sur le boutton "Google" on lance google maps avec les infos du report
+     */
     @OnClick(R.id.googleMapButton)
     public void googleMapOnClick(){
         startGoogleMapsActivity();
-        //Toast.makeText(this, "google", Toast.LENGTH_LONG).show();
     }
 
     private void startGoogleMapsActivity(){
         if(report != null) {
+            //on construit les infos nécessaires pour GoogleMaps
             String s = "geo:" + report.getLatitude() + "," + report.getLongitude()
                     + "?q=" + report.getLatitude() + "," + report.getLongitude()
                     + "(" + report.getAdresse().replace(' ', '+') + ")";
