@@ -167,7 +167,7 @@ public class AddReportActivity extends AppCompatActivity implements LocationList
      * permet de mettre à jour les textviews
      */
     private void refreshLayout(Location location){
-        DecimalFormat df = new DecimalFormat("#.00");
+        DecimalFormat df = new DecimalFormat("#.000000");
         localisationTextView.setText(String.format("%s°N %s° O", df.format(latitude), df.format(longitude)));
         submitButton.setEnabled(true);
         updateAddress(location);
